@@ -16,3 +16,26 @@ export const LINKS = [
         href: "/maps"
     }
 ]
+
+export const FOOTER_LINKS = [
+    {
+        label: "Contact",
+        href: "/dashboard",
+    },
+    {
+        label: "About",
+        href: "/dashboard",
+    },
+    {
+        label: "Features",
+        href: "/dashboard",
+    },
+    {
+        label: "Privacy Policy",
+        href: "/dashboard",
+    },
+    {
+        label: "Terms of Service",
+        href: "/dashboard",
+    },
+]
