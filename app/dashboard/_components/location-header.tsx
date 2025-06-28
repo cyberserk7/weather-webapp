@@ -1,62 +1,59 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import axios, { AxiosError } from "axios";
 import { Share2 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { WeatherResponse } from "../page";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-
 interface LocationHeaderProps {
-  area?: string;
+  weatherData?: WeatherResponse;
 }
 
-export const LocationHeader = ({ area }: LocationHeaderProps) => {
-  const [coords, setCoords] = useState<any>({});
+export const LocationHeader = ({ weatherData }: LocationHeaderProps) => {
+  const [dayDate, setDayDate] = useState<string | null>(null);
+  const [time, setTime] = useState<string | null>(null);
+
+  function extractDayDateTime(weatherData: WeatherResponse) {
+    const localDate = new Date((weatherData.dt + weatherData.timezone) * 1000);
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return {
+      day: dayNames[localDate.getUTCDay()],
+      date: `${monthNames[localDate.getUTCMonth()]} ${localDate.getUTCDate()}`,
+      time: `${String(localDate.getUTCHours()).padStart(2, "0")}:${String(
+        localDate.getUTCMinutes()
+      ).padStart(2, "0")}`,
+    };
+  }
 
   useEffect(() => {
-    if (area) {
-      getLatLong();
+    if (weatherData) {
+      const { day, date, time } = extractDayDateTime(weatherData);
+      setDayDate(`${day}, ${date}`);
+      setTime(time);
     }
-  }, [area]);
-
-  useEffect(() => {
-    if (coords.lat && coords.lon) {
-      getWeatherData();
-    }
-  }, [coords]);
-
-  const getLatLong = async () => {
-    try {
-      const res = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${area}&appid=${process.env.NEXT_PUBLIC_WEATHTER_API_KEY}&limit=1`
-      );
-
-      setCoords(res.data.coord);
-    } catch (error) {
-      if (error instanceof AxiosError && error.response?.data.cod === "404") {
-        toast.error("Location not found");
-      } else {
-        toast.error("Something went wrong");
-      }
-    }
-  };
-
-  const getWeatherData = async () => {
-    try {
-      const res = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${process.env.NEXT_PUBLIC_WEATHTER_API_KEY}&units=metric&limit=1&lang=en`
-      );
-
-      console.log(res.data);
-    } catch (error) {
-      if (error instanceof AxiosError && error.response?.data.cod === "404") {
-        toast.error("Location not found");
-      } else {
-        toast.error("Something went wrong");
-      }
-    }
-  };
+  }, [weatherData]);
 
   return (
     <div className="flex justify-between items-end">
@@ -74,12 +71,14 @@ export const LocationHeader = ({ area }: LocationHeaderProps) => {
               clipRule="evenodd"
             />
           </svg>
-          <h1 className="text-xl font-semibold">Kolkata, IN</h1>
+          <h1 className="text-xl font-semibold">
+            {weatherData?.name}, {weatherData?.sys?.country}
+          </h1>
         </div>
         <div className="flex gap-1 text-sm text-gray-500">
-          <span>Monday, June 7</span>
+          <span>{dayDate}</span>
           <span>•</span>
-          <span>Updated just now</span>
+          <span>{time}</span>
         </div>
       </div>
       <div className="">

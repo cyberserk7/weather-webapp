@@ -1,22 +1,15 @@
 "use client";
 
 import { NEARBY_LOCATIONS } from "@/constants/nearby-locations";
-import {
-  CloudRain,
-  CloudSun,
-  Cloudy,
-  Droplets,
-  Haze,
-  LucideIcon,
-} from "lucide-react";
+import { CloudRain, CloudSun, Cloudy, Haze } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { WeatherResponse } from "../../page";
 
 interface NearbyLocationsProps {
-  area?: string;
+  weatherData?: WeatherResponse;
 }
 
-export const NearbyLocations = ({ area }: NearbyLocationsProps) => {
+export const NearbyLocations = ({ weatherData }: NearbyLocationsProps) => {
   return (
     <div className="flex flex-col w-full gap-8">
       <div className="flex justify-between items-center">

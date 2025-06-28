@@ -37,7 +37,7 @@ export default function RootLayout({
         <Toaster />
         <Navbar />
         <div className="bg-[#F7FAFC] flex-1 ">
-          <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-4">
+          <div className="mx-auto max-w-7xl px-4 md:px-6 lg:px-8 py-4 h-full">
             {children}
           </div>
         </div>
