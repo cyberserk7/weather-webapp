@@ -2,14 +2,41 @@
 
 import { LINKS } from "@/constants/links";
 import { cn } from "@/lib/utils";
-import { Bell, Cloudy, Search } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { ArrowRight, Bell, Search } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Logo } from "./logo";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import qs from "query-string";
 
 export const Navbar = () => {
+  const [location, setLocation] = useState("");
+
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const area = searchParams.get("area");
+
+  useEffect(() => {
+    if (area) {
+      setLocation(area);
+    }
+  }, [area]);
+
+  const onClick = () => {
+    const url = qs.stringifyUrl(
+      {
+        url: pathname,
+        query: {
+          area: location,
+        },
+      },
+      { skipEmptyString: true, skipNull: true }
+    );
+    router.push(url);
+  };
 
   return (
     <nav className="bg-white border-b border-[#F3F4F6]">
@@ -22,7 +49,7 @@ export const Navbar = () => {
             const notIsActive = pathname !== link.href;
 
             return (
-              <a
+              <Link
                 key={index}
                 href={link.href}
                 className={cn(
@@ -31,18 +58,29 @@ export const Navbar = () => {
                 )}
               >
                 {link.label}
-              </a>
+              </Link>
             );
           })}
         </div>
         {/* search section */}
         <div className="flex items-center gap-3">
-          <div className="rounded-full bg-[#F3F4F6] border-none flex items-center gap-1.5 px-3 text-gray-500">
+          <div className="rounded-full bg-[#F3F4F6] border-none flex items-center gap-1.5 px-2 text-gray-500">
             <Search size={18} strokeWidth={2} />
             <Input
               className="border-none outline-none rounded-none p-0 placeholder:text-gray-500"
               placeholder="Search location..."
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
             />
+            {location.trim() && (
+              <button
+                onClick={onClick}
+                disabled={!location.trim()}
+                className="rounded-full bg-blue-500 p-1 text-white hover:bg-blue-500/90 hover:shadow-lg cursor-pointer transition-all"
+              >
+                <ArrowRight size={18} strokeWidth={2.5} />
+              </button>
+            )}
           </div>
           <Button
             size={"icon"}

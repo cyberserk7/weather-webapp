@@ -1,7 +1,63 @@
-import { Button } from "@/components/ui/button";
-import { Share2, Star } from "lucide-react";
+"use client";
 
-export const LocationHeader = () => {
+import { Button } from "@/components/ui/button";
+import axios, { AxiosError } from "axios";
+import { Share2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
+interface LocationHeaderProps {
+  area?: string;
+}
+
+export const LocationHeader = ({ area }: LocationHeaderProps) => {
+  const [coords, setCoords] = useState<any>({});
+
+  useEffect(() => {
+    if (area) {
+      getLatLong();
+    }
+  }, [area]);
+
+  useEffect(() => {
+    if (coords.lat && coords.lon) {
+      getWeatherData();
+    }
+  }, [coords]);
+
+  const getLatLong = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${area}&appid=${process.env.NEXT_PUBLIC_WEATHTER_API_KEY}&limit=1`
+      );
+
+      setCoords(res.data.coord);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data.cod === "404") {
+        toast.error("Location not found");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
+  };
+
+  const getWeatherData = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=${process.env.NEXT_PUBLIC_WEATHTER_API_KEY}&units=metric&limit=1&lang=en`
+      );
+
+      console.log(res.data);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response?.data.cod === "404") {
+        toast.error("Location not found");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
+  };
+
   return (
     <div className="flex justify-between items-end">
       <div className="flex flex-col">
