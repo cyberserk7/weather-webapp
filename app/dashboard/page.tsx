@@ -58,6 +58,8 @@ export default function DashboardPage() {
 
   const [coords, setCoords] = useState<any>({});
   const [weatherData, setWeatherData] = useState<any>({});
+  const [fiveDayForecast, setFiveDayForecast] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (area) {
@@ -109,6 +111,8 @@ export default function DashboardPage() {
       }
     }
   };
+
+  const getFiveDayForecast = async () => {};
 
   if (!weatherData.name) {
     return (

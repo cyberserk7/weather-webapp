@@ -23,7 +23,7 @@ export const Footer = () => {
             })}
           </div>
           <span className="text-gray-600">
-            &copy; 2023 Sayani. All rights reserved.
+            &copy; {new Date().getFullYear()} Climatic. All rights reserved.
           </span>
         </div>
         {/* Social Media Icons */}

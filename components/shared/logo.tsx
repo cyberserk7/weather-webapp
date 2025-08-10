@@ -11,7 +11,7 @@ export const Logo = ({ className }: LogoProps) => {
       <div className="rounded-sm bg-blue-600 text-white p-1.5">
         <Cloudy size={18} strokeWidth={2.5} />
       </div>
-      <span className="text-lg font-semibold">Sayani</span>
+      <span className="text-lg font-semibold">Climatic</span>
     </a>
   );
 };
